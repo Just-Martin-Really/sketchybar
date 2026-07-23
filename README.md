@@ -2,6 +2,8 @@
 
 My personal [SketchyBar](https://github.com/FelixKratz/SketchyBar) configuration for macOS. A custom top bar with app focus, calendar, media, and system stats, themed with Dracula.
 
+![sketchybar screenshot](assets/screenshot.png)
+
 ## Layout
 
 **Left**
