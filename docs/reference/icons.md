@@ -31,10 +31,12 @@ Three plugins pick a glyph from a range of values and keep them inline rather th
 | Plugin | Glyphs | Range | Risk |
 | --- | --- | --- | --- |
 | `battery.sh` | 6 | `U+F0E7`, `U+F240`–`U+F244` | 3-byte UTF-8 in the Private Use Area, so it can be stripped |
-| `volume.sh` | 4 | `U+F057E`–`U+F0581` | 4-byte UTF-8 outside the PUA, survives tooling |
-| `wifi.sh` | 2 | `U+F05A9`, `U+F05AA` | 4-byte UTF-8 outside the PUA, survives tooling |
+| `volume.sh` | 4 | `U+F057E`–`U+F0581` | 4-byte UTF-8 in Supplementary PUA-A, survives tooling |
+| `wifi.sh` | 2 | `U+F05A9`, `U+F05AA` | 4-byte UTF-8 in Supplementary PUA-A, survives tooling |
 
-The `volume.sh` and `wifi.sh` glyphs are Material Design Icons in the supplementary planes. Their 4-byte encoding is not affected by the stripping that hits 3-byte PUA characters, so they are left alone.
+The `volume.sh` and `wifi.sh` glyphs are Material Design Icons. They sit in Supplementary Private Use Area-A (`U+F0000`–`U+FFFFD`), so they are not outside the PUA, but their 4-byte encoding is unaffected by the stripping that hits 3-byte characters in the Basic Multilingual Plane. That is why they are left alone.
+
+`network.sh` and `next_meeting.sh` also contain non-ASCII literals: the arrows `U+2191` and `U+2193`, and an ellipsis `U+2026`. None sits in a Private Use Area, so none is at risk.
 
 The `battery.sh` glyphs are Font Awesome and do sit in the vulnerable range. They shipped with the SketchyBar formula and have survived every edit so far, so they are left as they are rather than rewritten for consistency.
 

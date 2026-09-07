@@ -43,9 +43,9 @@ The native bar still slides over SketchyBar when the pointer reaches the top edg
 
 Two items need permission before they work.
 
-Play something in Spotify or a browser. The `media` item prompts for Automation access the first time it queries a player. Accept it.
+For browser playback, add SketchyBar under System Settings → Privacy & Security → Accessibility. Without it, browser tracks never appear and the item stays empty while a browser is playing.
 
-For browser playback, add SketchyBar under System Settings → Privacy & Security → Accessibility. Without it, browser tracks never appear.
+Scrolling the volume item prompts for Automation access the first time. Accept it. Nothing else in the bar needs a permission: playback data comes from MediaRemote, which requires none.
 
 ## 6. Verify
 

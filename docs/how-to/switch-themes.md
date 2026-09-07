@@ -30,7 +30,7 @@ sketchybar --reload
 
 ## Write a new theme
 
-Copy an existing theme and edit the colours. Four levers cover everything:
+Copy an existing theme and edit the colours. Three levers cover everything:
 
 ```bash
 sketchybar --bar color=0xee282a36
@@ -42,4 +42,4 @@ Colours are `0xAARRGGBB`, alpha first.
 
 The wildcard `--set '/.*/'` applies to every item that already exists, so it must run after the items are added. Sourcing the theme at the end of `sketchybarrc` guarantees that.
 
-Alert colours for the mic and camera indicators are set inside `plugins/mic.sh` and `plugins/camera.sh` and are reapplied on every event, so a theme cannot override them. Edit those plugins to change them.
+Three plugins set their own colours and reapply them on every run, so a theme cannot override them. `mic.sh` and `camera.sh` set an alert colour on each event, and `next_meeting.sh` sets one of three Dracula values every 60 seconds depending on how close the meeting is. Edit those plugins to change them.

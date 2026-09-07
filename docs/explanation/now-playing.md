@@ -39,18 +39,23 @@ An earlier version fetched every window name and split the result on commas. App
 
 The match assumes the player occupies a dedicated single-tab private window. A window title reflects its active tab, so a multi-tab window would show whatever was last clicked.
 
-## Why fields are validated instead of trusted
+Two further assumptions are baked in. The suffix is the English one, so a Firefox running in another locale needs a different string. The AppleScript targets the process name `firefox`, which both the release and Developer Edition builds use, while the bundle glob `org.mozilla.firefox*` matches either.
 
-Fields arrive as four lines and are read by position. That is safe only while every value is single-line.
+## Why the control fields are queried separately
 
-A page sets its own `navigator.mediaSession.metadata.title`, and a newline in it is legal. One newline shifts every later field up a line, so `playbackRate` receives the artist and the bundle identifier receives the rate. A crafted title can bypass the Firefox branch entirely and put arbitrary text on the bar.
+`nowplaying-cli` prints one line per requested key, and the script reads them by position. That is safe only while no value can contain a newline.
 
-Both control fields are therefore checked before use:
+A page sets its own `navigator.mediaSession.metadata.title`, and a newline in it is legal. One newline shifts every later field up a line, so `playbackRate` receives the artist and the bundle identifier receives the rate. A crafted title can then skip the Firefox branch and put the page's own text on the bar.
+
+Validating the shifted values does not close this. A title of `EVIL\nInjectedArtist` with artist `1` yields `RATE=1` and `BUNDLE=1.000000`, and a pattern permissive enough to accept a real bundle identifier accepts `1.000000` too.
+
+The fix is to keep page-controlled values out of the query that decides the branch:
 
 ```bash
-[[ "$RATE" =~ ^1(\.0+)?$ ]] || hide
-[[ "$BUNDLE" =~ ^[A-Za-z0-9._-]+$ ]] || hide
+CTRL=$(nowplaying-cli get playbackRate clientBundleIdentifier 2>/dev/null)
 ```
+
+Neither field comes from the page, so neither can be shifted. Title and artist are fetched only afterwards, in the branch that needs them. A newline there still garbles the label, but it can no longer change which branch runs.
 
 The impact was always display-only. No track data reaches `osascript`, which runs a fixed literal with no interpolation.
 
@@ -62,8 +67,10 @@ An unscoped cache creates worse failures than it prevents. Writing on every path
 
 Each entry now records the owning bundle, and a cached value is reused only when the bundle matches and the file is less than a minute old. A genuinely broken read hides the item instead of lying about it.
 
+The cache is written only after a fresh scrape. Rewriting it from its own contents on every poll would push the modification time forward every three seconds, so the one-minute window would never elapse and the stale title would survive anyway.
+
 The cache lives under `$TMPDIR`, which is per-user and mode 700 on macOS. `/tmp` is mode 1777, and the cached value is a page-controlled string, so a predictable path there allowed a symlink attack against any file the user could write.
 
 ## Polling cost
 
-One `nowplaying-cli` call takes roughly 108ms, and the window read roughly 109ms. At `update_freq=3` that is about 220ms of work every three seconds. The item ran at one second before the browser fallback existed, which would sustain about 20% of one core.
+One `nowplaying-cli` call takes roughly 108ms, and the window read roughly 109ms. Browser playback costs one of each, about 220ms every three seconds at `update_freq=3`. Other players cost a second `nowplaying-cli` call instead of the window read, for roughly 216ms. The item ran at one second before the browser fallback existed, which would sustain about 20% of one core.

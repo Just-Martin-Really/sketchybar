@@ -69,4 +69,4 @@ The `media` item sets `label.max_chars=28` with `scroll_texts=on`, so longer tit
 | `background.height` | `22` |
 | `background.corner_radius` | `6` |
 
-Colours are not listed here. They are set by the active theme, not by `sketchybarrc`.
+Colours are not listed here. `sketchybarrc` sets defaults, and the theme sourced at the end of the file overrides them.

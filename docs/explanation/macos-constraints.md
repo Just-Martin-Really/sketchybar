@@ -59,7 +59,7 @@ The formatter pads output to four characters with `printf "%4s"`. Without the pa
 
 Nerd Font glyphs sit in the Unicode Private Use Area, and several editors and tools drop those characters silently on write. A stripped glyph produces no error, leaves no visible diff, and renders the item blank.
 
-Every glyph is therefore stored as a bash ANSI-C escape, which keeps `icons.sh` pure ASCII. See [Icon constants](../reference/icons.md) for the values and the verification command.
+Every glyph in `icons.sh` is therefore stored as a bash ANSI-C escape, which keeps that file pure ASCII. Three plugins still hold glyphs inline; see [Icon constants](../reference/icons.md) for the values, the exceptions, and the verification command.
 
 ## Themes are scripts because SketchyBar has no palette
 
