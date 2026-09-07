@@ -1,0 +1,19 @@
+/* Dracula palette, matching themes/dracula.sh so the docs and the bar agree.
+   Material has no built-in name close to these hexes, so the variables are
+   overridden directly. */
+
+:root {
+  --md-primary-fg-color:        #bd93f9;
+  --md-primary-fg-color--light: #d6b6fb;
+  --md-primary-fg-color--dark:  #6c54a8;
+  --md-accent-fg-color:         #ff79c6;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:  #bd93f9;
+  --md-accent-fg-color:   #ff79c6;
+  --md-default-bg-color:  #282a36;
+  --md-code-bg-color:     #21222c;
+  --md-default-fg-color:  #f8f8f2;
+  --md-typeset-a-color:   #8be9fd;
+}

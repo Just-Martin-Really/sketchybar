@@ -60,14 +60,14 @@ sketchybar --add item next_meeting left \
              script="$PLUGIN_DIR/next_meeting.sh" \
              click_script="$PLUGIN_DIR/next_meeting_join.sh"
 
-##### Left: now playing + interactive progress bar (polled every 1s) #####
+##### Left: now playing (polled every 3s) #####
 sketchybar --add item media left \
            --set media \
              icon="$ICON_MUSIC" \
              label.max_chars=28 \
              scroll_texts=on \
              drawing=off \
-             update_freq=1 \
+             update_freq=3 \
              script="$PLUGIN_DIR/media.sh" \
              click_script="$PLUGIN_DIR/media_click.sh"
 

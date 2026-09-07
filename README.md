@@ -9,52 +9,53 @@ My personal [SketchyBar](https://github.com/FelixKratz/SketchyBar) configuration
 **Left**
 - Focused-app pill
 - Next calendar meeting today (click to join the Teams call)
-- Now playing (Spotify / Apple Music), scrolling title
+- Now playing, scrolling title
 
 **Right** (rightmost first)
 - Clock (click opens Calendar)
 - Battery
 - Volume (scroll to change)
-- Wi-Fi state
+- Wi-Fi signal in dBm
 - Network throughput (up/down)
 - RAM
 - CPU
 - Mic / camera in-use indicators
 
-## Requirements
+## Documentation
 
-- macOS (Apple Silicon; developed on Sonoma/Tahoe)
-- [SketchyBar](https://github.com/FelixKratz/SketchyBar)
-- [JetBrains Mono Nerd Font](https://www.nerdfonts.com/) for the glyphs
-- [`icalBuddy`](https://github.com/ali-rantakari/icalBuddy) for the next-meeting item
+Full docs live in [`docs/`](docs/index.md), organised by [Diátaxis](https://diataxis.fr):
+
+- [Install and run the bar](docs/tutorials/10-install.md) walks a fresh machine from zero.
+- [How-to guides](docs/how-to/index.md) cover adding an item, switching themes, and fixing the mic/camera watcher.
+- [Reference](docs/reference/index.md) lists every item, runtime file, dependency, and icon constant.
+- [Explanation](docs/explanation/index.md) records which macOS API each workaround replaces.
+
+## Quick start
 
 ```sh
 brew tap FelixKratz/formulae
-brew install sketchybar ical-buddy
+brew install sketchybar ical-buddy nowplaying-cli
 brew install --cask font-jetbrains-mono-nerd-font sf-symbols
-```
 
-## Install
-
-Clone into the SketchyBar config location and start the service:
-
-```sh
 git clone git@github.com:Just-Martin-Really/sketchybar.git ~/.config/sketchybar
 brew services start sketchybar
 ```
 
-Apply config changes without a full restart:
-
-```sh
-sketchybar --reload
-```
+Apply later changes with `sketchybar --reload` rather than restarting the service. Full setup, including the two macOS permissions the media item needs, is in the [install tutorial](docs/tutorials/10-install.md).
 
 ## File layout
 
-```
+```text
 .
 ├── sketchybarrc        # main config, sourced on every reload
 ├── icons.sh            # Nerd Font glyph constants (bash ANSI-C escapes)
+├── assets/
+│   └── screenshot.png
+├── docs/               # Diátaxis documentation
+│   ├── tutorials/
+│   ├── how-to/
+│   ├── reference/
+│   └── explanation/
 ├── plugins/            # per-item scripts, invoked with $NAME / $SENDER / $INFO
 │   ├── avwatch.sh          # background log-stream daemon for mic/cam indicators
 │   ├── battery.sh
@@ -62,7 +63,7 @@ sketchybar --reload
 │   ├── clock.sh
 │   ├── cpu.sh
 │   ├── front_app.sh
-│   ├── media.sh            # polls Spotify + Apple Music via osascript
+│   ├── media.sh            # track name via MediaRemote, with a browser fallback
 │   ├── media_click.sh
 │   ├── mic.sh
 │   ├── network.sh          # throughput, diffs netstat against a /tmp state file
@@ -76,14 +77,12 @@ sketchybar --reload
     └── tokyonight.sh   # alternate
 ```
 
-## Themes
-
-Each theme is a standalone script that recolors the bar live (no items are recreated). The active theme is `source`d at the end of `sketchybarrc`, so it survives reloads. To switch, change the `source` line and run `sketchybar --reload`; to preview, just run the theme script directly.
-
 ## Notes
 
-- **Glyphs** live in `icons.sh` as `$'\uXXXX'` escapes and are sourced where needed, rather than embedding literal Private Use Area characters in scripts.
-- **Mic / camera indicators** can't be reliably polled on Apple Silicon, so `avwatch.sh` runs a long-lived `log stream` on Control Center's privacy-indicator subsystem, writes state to `/tmp`, and triggers `mic_change` / `camera_change` events.
-- **Media** uses `osascript` polling instead of the deprecated `media_change` event. The first poll triggers a one-time Apple Events permission prompt.
-- **Next meeting** reads the macOS Calendar via `icalBuddy` (Outlook/M365 works once the Exchange account is added to macOS Internet Accounts). All-day and holiday/birthday/reminder calendars are excluded.
-- **Wi-Fi** shows connection state only; macOS 14+ redacts the SSID without Location Services, and the `airport` CLI was removed.
+Most items have an unusual shape because the obvious approach stopped working on modern macOS. [Explanation](docs/explanation/index.md) covers each one. The short version:
+
+- **Glyphs** live in `icons.sh` as `$'\uXXXX'` escapes. Tools strip raw Private Use Area characters silently, leaving no error and no visible diff.
+- **Now playing** reads MediaRemote through `nowplaying-cli`. Firefox publishes only a placeholder title, so its track comes from the window title.
+- **Mic / camera indicators** cannot be polled on Apple Silicon. `avwatch.sh` streams Control Center's privacy-indicator log and triggers `mic_change` / `camera_change`.
+- **Next meeting** reads macOS Calendar via `icalBuddy`. Outlook and M365 events appear once the Exchange account is added to Internet Accounts.
+- **Wi-Fi** reports RSSI from `system_profiler`. The `airport` binary was removed in macOS 14.4, and `wdutil` requires sudo.
