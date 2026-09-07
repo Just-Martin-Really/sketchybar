@@ -1,3 +1,7 @@
+---
+title: Home
+---
+
 # sketchybar config
 
 A Dracula-themed macOS status bar built on [SketchyBar](https://github.com/FelixKratz/SketchyBar), with app focus, calendar, media, and system stats.
