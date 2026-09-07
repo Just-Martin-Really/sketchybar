@@ -7,7 +7,6 @@ extra_css = ["stylesheets/extra.css"]
 
 [project.theme]
 language = "en"
-logo = "lucide/panel-top"
 features = [
     "content.code.annotate",
     "content.code.copy",
@@ -25,6 +24,9 @@ features = [
     "navigation.tracking",
     "search.highlight",
 ]
+
+[project.theme.icon]
+logo = "lucide/panel-top"
 
 [[project.theme.palette]]
 scheme = "default"
