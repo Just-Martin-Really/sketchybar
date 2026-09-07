@@ -21,47 +21,41 @@ My personal [SketchyBar](https://github.com/FelixKratz/SketchyBar) configuration
 - CPU
 - Mic / camera in-use indicators
 
-## Requirements
+## Documentation
 
-- macOS on Apple Silicon (developed on Sonoma through Tahoe 26)
-- [SketchyBar](https://github.com/FelixKratz/SketchyBar)
-- [JetBrains Mono Nerd Font](https://www.nerdfonts.com/) for the glyphs
-- [`icalBuddy`](https://github.com/ali-rantakari/icalBuddy) for the next-meeting item
-- [`nowplaying-cli`](https://github.com/kirtan-shah/nowplaying-cli) for the now-playing item
+Full docs live in [`docs/`](docs/index.md), organised by [Diátaxis](https://diataxis.fr):
+
+- [Install and run the bar](docs/tutorials/10-install.md) walks a fresh machine from zero.
+- [How-to guides](docs/how-to/index.md) cover adding an item, switching themes, and fixing the mic/camera watcher.
+- [Reference](docs/reference/index.md) lists every item, runtime file, dependency, and icon constant.
+- [Explanation](docs/explanation/index.md) records which macOS API each workaround replaces.
+
+## Quick start
 
 ```sh
 brew tap FelixKratz/formulae
 brew install sketchybar ical-buddy nowplaying-cli
 brew install --cask font-jetbrains-mono-nerd-font sf-symbols
-```
 
-The now-playing item also needs Accessibility permission when the player is a browser. See [docs/design-notes.md](docs/design-notes.md#now-playing).
-
-## Install
-
-Clone into the SketchyBar config location and start the service:
-
-```sh
 git clone git@github.com:Just-Martin-Really/sketchybar.git ~/.config/sketchybar
 brew services start sketchybar
 ```
 
-Apply config changes without a full restart:
-
-```sh
-sketchybar --reload
-```
-
-Use `--reload` rather than `brew services restart`. A restart kills the parent process and can orphan the `log stream` child that `avwatch.sh` depends on.
+Apply later changes with `sketchybar --reload` rather than restarting the service. Full setup, including the two macOS permissions the media item needs, is in the [install tutorial](docs/tutorials/10-install.md).
 
 ## File layout
 
-```
+```text
 .
 ├── sketchybarrc        # main config, sourced on every reload
 ├── icons.sh            # Nerd Font glyph constants (bash ANSI-C escapes)
-├── docs/
-│   └── design-notes.md # why each item works the way it does
+├── assets/
+│   └── screenshot.png
+├── docs/               # Diátaxis documentation
+│   ├── tutorials/
+│   ├── how-to/
+│   ├── reference/
+│   └── explanation/
 ├── plugins/            # per-item scripts, invoked with $NAME / $SENDER / $INFO
 │   ├── avwatch.sh          # background log-stream daemon for mic/cam indicators
 │   ├── battery.sh
@@ -83,18 +77,12 @@ Use `--reload` rather than `brew services restart`. A restart kills the parent p
     └── tokyonight.sh   # alternate
 ```
 
-## Themes
-
-Each theme is a standalone script that recolors the bar live. No items are recreated; only `bar color`, the `--set '/.*/'` defaults, and a few per-item overrides change. The active theme is `source`d at the end of `sketchybarrc`, so it survives reloads.
-
-To switch, change the `source` line and run `sketchybar --reload`. To preview without committing, run the theme script directly. The next reload reverts it.
-
 ## Notes
 
-Most items here exist in an unusual shape because the obvious approach does not work on modern macOS. [docs/design-notes.md](docs/design-notes.md) explains each one. The short version:
+Most items have an unusual shape because the obvious approach stopped working on modern macOS. [Explanation](docs/explanation/index.md) covers each one. The short version:
 
-- **Glyphs** live in `icons.sh` as `$'\uXXXX'` escapes. Editors and tooling silently strip raw Private Use Area characters, so the escapes keep the bytes in one place.
-- **Now playing** reads macOS MediaRemote through `nowplaying-cli`. Firefox publishes no track metadata, so its title comes from the window title instead.
+- **Glyphs** live in `icons.sh` as `$'\uXXXX'` escapes. Tools strip raw Private Use Area characters silently, leaving no error and no visible diff.
+- **Now playing** reads MediaRemote through `nowplaying-cli`. Firefox publishes only a placeholder title, so its track comes from the window title.
 - **Mic / camera indicators** cannot be polled on Apple Silicon. `avwatch.sh` streams Control Center's privacy-indicator log and triggers `mic_change` / `camera_change`.
 - **Next meeting** reads macOS Calendar via `icalBuddy`. Outlook and M365 events appear once the Exchange account is added to Internet Accounts.
 - **Wi-Fi** reports RSSI from `system_profiler`. The `airport` binary was removed in macOS 14.4, and `wdutil` requires sudo.
