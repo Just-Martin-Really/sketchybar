@@ -2,6 +2,8 @@
 # Next timed calendar event today. Hidden when nothing is left. Turns red
 # when the meeting starts within 10 minutes. Requires icalBuddy (brew).
 source "$HOME/.config/sketchybar/icons.sh"
+# State colours come from the active theme, not hardcoded here.
+source "$HOME/.config/sketchybar/themes/active.sh" >/dev/null 2>&1
 
 # Calendars that are not meetings (holidays, birthdays, reminders, tasks).
 EXCLUDE="Deutsche Feiertage,Germany holidays,United States holidays,Birthdays,Reminders,Tasks"
@@ -23,7 +25,7 @@ if [ -z "$LINE" ]; then
   # Muted dracula comment color so it stays quiet when nothing is left.
   sketchybar --set "$NAME" drawing=on icon="$ICON_CAL" \
     label="No more meetings today" \
-    icon.color=0xff6272a4 label.color=0xff6272a4
+    icon.color="$COLOR_MUTED" label.color="$COLOR_MUTED"
   exit 0
 fi
 
@@ -37,9 +39,9 @@ EV_MIN=$(( 10#${TIME%%:*} * 60 + 10#${TIME#*:} ))
 DIFF=$(( EV_MIN - NOW_MIN ))
 
 # Purple normally, red when imminent (matches the dracula accent).
-COLOR=0xffbd93f9
+COLOR="$COLOR_ACCENT"
 if [ "$DIFF" -ge 0 ] && [ "$DIFF" -le 10 ]; then
-  COLOR=0xffff5555
+  COLOR="$COLOR_URGENT"
 fi
 
 # Trim long titles.
