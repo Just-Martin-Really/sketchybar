@@ -106,7 +106,8 @@ sketchybar --add item clock right \
 "$PLUGIN_DIR/avwatch.sh" &
 
 ##### Theme #####
-source "$CONFIG_DIR/themes/dracula.sh"
+# Resolves to themes/local.sh when present, otherwise the shipped default.
+source "$CONFIG_DIR/themes/active.sh"
 
 ##### Force first run #####
 sketchybar --update

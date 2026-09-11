@@ -42,4 +42,19 @@ Colours are `0xAARRGGBB`, alpha first.
 
 The wildcard `--set '/.*/'` applies to every item that already exists, so it must run after the items are added. Sourcing the theme at the end of `sketchybarrc` guarantees that.
 
-Three plugins set their own colours and reapply them on every run, so a theme cannot override them. `mic.sh` and `camera.sh` set an alert colour on each event, and `next_meeting.sh` sets one of three Dracula values every 60 seconds depending on how close the meeting is. Edit those plugins to change them.
+Plugins that need a colour read it from the theme rather than inlining hex, so a theme reaches every item. `mic.sh` and `camera.sh` use `COLOR_ALERT`; `next_meeting.sh` uses `COLOR_MUTED`, `COLOR_ACCENT` or `COLOR_URGENT` depending on how close the meeting is.
+
+## Keep a palette off the repo
+
+`themes/active.sh` sources `themes/local.sh` when it exists, and the shipped default otherwise. `local.sh` is gitignored, so a personal palette runs on the machine without being committed.
+
+```bash
+cp themes/dracula.sh themes/local.sh
+```
+
+Edit the copy, then reload. To go back to the shipped theme, move it aside:
+
+```bash
+mv themes/local.sh themes/local.sh.off
+sketchybar --reload
+```
