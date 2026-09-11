@@ -70,3 +70,18 @@ The `media` item sets `label.max_chars=28` with `scroll_texts=on`, so longer tit
 | `background.corner_radius` | `6` |
 
 Colours are not listed here. `sketchybarrc` sets defaults, and the theme sourced at the end of the file overrides them.
+
+## Theme colour contract
+
+Every theme defines these, and plugins read them instead of hardcoding hex. Values are `0xAARRGGBB`, alpha first.
+
+| Variable | Used by |
+| --- | --- |
+| `COLOR_BAR` | bar background |
+| `COLOR_ICON` | default item icon |
+| `COLOR_LABEL` | default item label |
+| `COLOR_PILL`, `COLOR_PILL_TEXT` | the `front_app` pill |
+| `COLOR_ACCENT` | `next_meeting`, upcoming |
+| `COLOR_URGENT` | `next_meeting`, within ten minutes |
+| `COLOR_MUTED` | `next_meeting`, nothing left today |
+| `COLOR_ALERT` | `mic` and `camera` while in use |

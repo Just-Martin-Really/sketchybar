@@ -1,6 +1,6 @@
 # sketchybar
 
-My personal [SketchyBar](https://github.com/FelixKratz/SketchyBar) configuration for macOS. A custom top bar with app focus, calendar, media, and system stats, themed with Dracula.
+My personal [SketchyBar](https://github.com/FelixKratz/SketchyBar) configuration for macOS. A custom top bar with app focus, calendar, media, and system stats, themed with Dracula. Drop in a `themes/local.sh` to run your own palette without committing it.
 
 ![sketchybar screenshot](assets/screenshot.png)
 
@@ -73,7 +73,8 @@ Apply later changes with `sketchybar --reload` rather than restarting the servic
 │   ├── volume.sh           # click opens Sound settings, scroll changes volume
 │   └── wifi.sh
 └── themes/
-    ├── dracula.sh      # active theme
+    ├── active.sh       # resolves local.sh, else the default
+    ├── dracula.sh      # shipped default
     └── tokyonight.sh   # alternate
 ```
 
