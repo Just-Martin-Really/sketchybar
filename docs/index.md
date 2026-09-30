@@ -37,3 +37,4 @@ Why the code looks the way it does.
 
 - [macOS constraints](explanation/macos-constraints.md)
 - [How the now-playing item works](explanation/now-playing.md)
+- [Why the bar resizes itself](explanation/display-density.md)

@@ -8,10 +8,14 @@ PLUGIN_DIR="$CONFIG_DIR/plugins"
 # UTF-8 bytes exist in a single place instead of being duplicated inline.
 source "$CONFIG_DIR/icons.sh"
 
+# Bar and item sizes live once in sizes.sh, because plugins/bar_scale.sh has to
+# rescale exactly these numbers when the active display changes density.
+source "$CONFIG_DIR/sizes.sh"
+
 ##### Bar appearance #####
 sketchybar --bar \
   position=top \
-  height=36 \
+  height="$BASE_HEIGHT" \
   blur_radius=30 \
   color=0x66000000 \
   padding_left=8 \
@@ -24,15 +28,15 @@ sketchybar --bar \
 default=(
   padding_left=4
   padding_right=4
-  icon.font="JetBrainsMono Nerd Font:Bold:15.0"
-  label.font="JetBrainsMono Nerd Font:Semibold:13.0"
+  icon.font="$ICON_FONT_FACE:$BASE_ICON"
+  label.font="$LABEL_FONT_FACE:$BASE_LABEL"
   icon.color=0xffffffff
   label.color=0xffffffff
   icon.padding_left=6
   icon.padding_right=4
   label.padding_left=2
   label.padding_right=6
-  background.height=22
+  background.height="$BASE_BACKGROUND"
   background.corner_radius=6
 )
 sketchybar --default "${default[@]}"
@@ -108,6 +112,21 @@ sketchybar --add item clock right \
 ##### Theme #####
 # Resolves to themes/local.sh when present, otherwise the shipped default.
 source "$CONFIG_DIR/themes/active.sh"
+
+##### Per-display sizing #####
+# A point is physically larger on a less dense display, so the bar is resized
+# whenever the active display changes. The item draws nothing; it exists only
+# to hold the subscription.
+#
+# system_woke matters because a sleeping display is reported as inactive: a
+# reload while the screens are off leaves the shipped sizes in place, and
+# nothing would correct them until the next display switch.
+sketchybar --add item display_scale left \
+           --set display_scale drawing=off script="$PLUGIN_DIR/bar_scale.sh" \
+           --subscribe display_scale display_change system_woke
+
+# Size for the display in use now, rather than waiting for the first switch.
+"$PLUGIN_DIR/bar_scale.sh"
 
 ##### Force first run #####
 sketchybar --update

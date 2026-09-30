@@ -11,12 +11,15 @@ See also: [Install and run the bar](../tutorials/10-install.md) · [Bar items](b
 | `ical-buddy` | `next_meeting` | `brew install ical-buddy` |
 | `nowplaying-cli` | `media` | `brew install nowplaying-cli` |
 | JetBrains Mono Nerd Font | every glyph | `brew install --cask font-jetbrains-mono-nerd-font` |
+| `swiftc` | optional; per-display bar sizing | Xcode Command Line Tools, `xcode-select --install` |
 
 `sketchybar` comes from the `FelixKratz/formulae` tap:
 
 ```bash
 brew tap FelixKratz/formulae
 ```
+
+Without `swiftc` the bar cannot measure display density and keeps the point sizes in `sizes.sh`, which is how it behaved before per-display sizing existed. See [Why the bar resizes itself](../explanation/display-density.md).
 
 A missing `nowplaying-cli` is reported on the bar itself. The `media` item draws the label `nowplaying-cli missing` rather than failing silently.
 
