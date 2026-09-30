@@ -49,6 +49,9 @@ Apply later changes with `sketchybar --reload` rather than restarting the servic
 .
 ├── sketchybarrc        # main config, sourced on every reload
 ├── icons.sh            # Nerd Font glyph constants (bash ANSI-C escapes)
+├── sizes.sh            # point sizes and how they scale across displays
+├── helpers/
+│   └── display_ppi.swift   # display density, compiled on first run
 ├── assets/
 │   └── screenshot.png
 ├── docs/               # Diátaxis documentation
@@ -58,6 +61,7 @@ Apply later changes with `sketchybar --reload` rather than restarting the servic
 │   └── explanation/
 ├── plugins/            # per-item scripts, invoked with $NAME / $SENDER / $INFO
 │   ├── avwatch.sh          # background log-stream daemon for mic/cam indicators
+│   ├── bar_scale.sh        # resizes the bar for the connected displays
 │   ├── battery.sh
 │   ├── camera.sh
 │   ├── clock.sh

@@ -13,6 +13,9 @@ State written at runtime. None of it is version controlled, and all of it is saf
 | `/tmp/sketchybar_avwatch.pid` | watcher PID | `avwatch.sh` | nothing; diagnostic only |
 | `/tmp/sketchybar_net_en0` | `timestamp in_bytes out_bytes` | `network.sh` | `network.sh` |
 | `$TMPDIR/sb_media_last` | `bundle_id<TAB>label` | `media.sh` | `media.sh` |
+| `helpers/display_ppi` | compiled binary | `bar_scale.sh`, on first run | `bar_scale.sh` |
+
+The display helper is gitignored and rebuilt whenever `helpers/display_ppi.swift` is newer, so deleting it costs one compile.
 
 The media cache uses `$TMPDIR` rather than `/tmp` because it stores a string controlled by a web page. `$TMPDIR` is per-user and mode 700; `/tmp` is mode 1777.
 
@@ -34,6 +37,7 @@ Declared in `sketchybarrc` and fired by `avwatch.sh`.
 | `front_app_switched` | `front_app` |
 | `volume_change` | `volume` |
 | `mouse.scrolled` | `volume` |
-| `system_woke` | `battery` |
+| `system_woke` | `battery`, `display_scale` |
 | `power_source_change` | `battery` |
 | `wifi_change` | `wifi` |
+| `display_change` | `display_scale` |

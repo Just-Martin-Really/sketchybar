@@ -11,6 +11,9 @@ Every item declared in `sketchybarrc`, with its refresh source and click action.
 | `front_app` | `front_app_switched` event | `front_app.sh` | none |
 | `next_meeting` | 60s | `next_meeting.sh` | `next_meeting_join.sh` |
 | `media` | 3s | `media.sh` | `media_click.sh` |
+| `display_scale` | `display_change`, `system_woke` | `bar_scale.sh` | none |
+
+`display_scale` draws nothing. It exists only to hold the subscription that resizes the bar for the connected displays, explained in [Why the bar resizes itself](../explanation/display-density.md). `sketchybarrc` also runs `bar_scale.sh` once directly at the end of a reload, so the first sizing does not wait for a display switch.
 
 ## Right side
 
@@ -52,7 +55,7 @@ The `media` item sets `label.max_chars=28` with `scroll_texts=on`, so longer tit
 | Property | Value |
 | --- | --- |
 | `position` | `top` |
-| `height` | `36` |
+| `height` | `36` at 150 ppi, scaled per display |
 | `blur_radius` | `30` |
 | `padding_left` | `8` |
 | `padding_right` | `20` |
@@ -64,10 +67,12 @@ The `media` item sets `label.max_chars=28` with `scroll_texts=on`, so longer tit
 
 | Property | Value |
 | --- | --- |
-| `icon.font` | `JetBrainsMono Nerd Font:Bold:15.0` |
-| `label.font` | `JetBrainsMono Nerd Font:Semibold:13.0` |
-| `background.height` | `22` |
+| `icon.font` | `JetBrainsMono Nerd Font:Bold:15.0` at 150 ppi, scaled per display |
+| `label.font` | `JetBrainsMono Nerd Font:Semibold:13.0` at 150 ppi, scaled per display |
+| `background.height` | `22` at 150 ppi, scaled per display |
 | `background.corner_radius` | `6` |
+
+The four scaled values are the base sizes in `sizes.sh`, which apply unchanged on a 150 points-per-inch display. `bar_scale.sh` rewrites them for the active display, so a running bar reports different numbers. See [Why the bar resizes itself](../explanation/display-density.md).
 
 Colours are not listed here. `sketchybarrc` sets defaults, and the theme sourced at the end of the file overrides them.
 
